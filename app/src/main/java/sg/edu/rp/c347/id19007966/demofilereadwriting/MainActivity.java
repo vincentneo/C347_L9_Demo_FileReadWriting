@@ -1,8 +1,11 @@
 package sg.edu.rp.c347.id19007966.demofilereadwriting;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.FileObserver;
 import android.util.Log;
 import android.widget.Button;
@@ -29,13 +32,24 @@ public class MainActivity extends AppCompatActivity {
         readButton = findViewById(R.id.readButton);
         statusTextView = findViewById(R.id.textView);
 
-        String folderLocation = getFilesDir().getAbsolutePath() + "/MyFolder";
+        /* --- Internal app directory path --- */
+        //String folderLocation = getFilesDir().getAbsolutePath() + "/MyFolder";
+
+        /* --- External app directory path --- */
+        // does not mean external as in SD Card, but rather, means its outside the sandboxed internal app storage.
+        String folderLocation = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyFolder2";
+
+        String[] permission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        ActivityCompat.requestPermissions(MainActivity.this, permission, 0);
 
         File folder = new File(folderLocation);
         if (!folder.exists()) {
             boolean result = folder.mkdir();
             if (result) {
                 Log.d("File read/write", "Folder Created");
+            }
+            else {
+                Toast.makeText(this, "folder creation FAILED!!", Toast.LENGTH_SHORT).show();
             }
         }
 
